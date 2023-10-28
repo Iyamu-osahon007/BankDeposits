@@ -196,6 +196,7 @@
             btnNewAccount.TabIndex = 4;
             btnNewAccount.Text = "New Account";
             btnNewAccount.UseVisualStyleBackColor = true;
+            btnNewAccount.Click += btnNewAccount_Click;
             // 
             // lblDepositSummary
             // 

@@ -14,6 +14,7 @@ namespace BankDeposits
     {
         const decimal SURG_PERC = 0.99m;
         const decimal CHECK_PROCESS_FEE = 0.45m;
+        decimal totalDeposit;
         public frmDeposit()
         {
             InitializeComponent();
@@ -28,12 +29,13 @@ namespace BankDeposits
             int numOfChecks = Convert.ToInt32(txtNumChecks.Text);
             decimal cashDptAfterSurg = cashAmount * SURG_PERC;
             decimal transactionProcess = CHECK_PROCESS_FEE * numOfChecks;
-
+            decimal netTotal = cashDptAfterSurg + checkingAmt - transactionProcess;
+             totalDeposit += netTotal;
 
             if (numOfChecks >= 5)
             {
 
-                 transactionProcess = 0.35m * numOfChecks;
+                transactionProcess = 0.35m * numOfChecks;
             }
             else
             {
@@ -42,12 +44,33 @@ namespace BankDeposits
 
 
 
-            lblDepositSummary.Text = $" Deposit for {accountName:c} \r\n Account #: {accountNum:c} \r\n \r\n" +
-                $" Cash Deposit (after Surcharge):{cashDptAfterSurg:c} " +
-                $"\r\n Check Deposit:{checkingAmt:c} \r\n" +
-                $"Check Processing Fee:{transactionProcess:c} ";
+            lblDepositSummary.Text =$"Deposit for {accountName} \r\nAccount #: {accountNum} \r\n \r\n" +
+                $"Cash Deposit (after Surcharge):{cashDptAfterSurg:c} " +
+                $"\r\nCheck Deposit:{checkingAmt:c} \r\n" +
+                $"Check Processing Fee:{transactionProcess:c} \r\n \r\nNet Deposit{netTotal:c} ";
+
+            
+
+            lblTotalDisplay.Text = $"Total Deposit for all accounts belonging {accountName} is {totalDeposit:c}";
 
 
+            txtAccountHolder.Enabled = false;
+            btnMakeDeposit.Enabled = false;
+            btnNewAccount.Enabled = true;
+            
+
+
+        }
+
+        private void btnNewAccount_Click(object sender, EventArgs e)
+        {
+            txtAccountNumber.Text = "";
+            txtCashAmt.Text = "";
+            txtCheckAmt.Text = "";
+            txtNumChecks.Text = "";
+            lblDepositSummary.Text = "";
+            btnMakeDeposit.Enabled = true;
+            txtAccountNumber.Focus();
 
         }
     }
