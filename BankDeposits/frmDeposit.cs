@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,50 +16,74 @@ namespace BankDeposits
         const decimal SURG_PERC = 0.99m;
         const decimal CHECK_PROCESS_FEE = 0.45m;
         decimal totalDeposit;
+        int deposit_count;
+
         public frmDeposit()
         {
             InitializeComponent();
         }
 
         private void btnMakeDeposit_Click(object sender, EventArgs e)
+
         {
-            string accountName = txtAccountHolder.Text;
-            int accountNum = Convert.ToInt32(txtAccountNumber.Text);
-            decimal cashAmount = Convert.ToDecimal(txtCashAmt.Text);
-            decimal checkingAmt = Convert.ToDecimal(txtCheckAmt.Text);
-            int numOfChecks = Convert.ToInt32(txtNumChecks.Text);
-            decimal cashDptAfterSurg = cashAmount * SURG_PERC;
-            decimal transactionProcess = CHECK_PROCESS_FEE * numOfChecks;
-            decimal netTotal = cashDptAfterSurg + checkingAmt - transactionProcess;
-             totalDeposit += netTotal;
-
-            if (numOfChecks >= 5)
+            try
             {
+                string accountName = txtAccountHolder.Text;
+                int accountNum = Convert.ToInt32(txtAccountNumber.Text);
+                decimal cashAmount = Convert.ToDecimal(txtCashAmt.Text);
+                decimal checkingAmt = Convert.ToDecimal(txtCheckAmt.Text);
+                int numOfChecks = Convert.ToInt32(txtNumChecks.Text);
+                decimal TRANACTION_FEE = 2.50m;
+                decimal cashDptAfterSurg = cashAmount * SURG_PERC;
+                decimal checkProcessFee = CHECK_PROCESS_FEE * numOfChecks;
+                decimal netTotal = cashDptAfterSurg + checkingAmt - checkProcessFee - TRANACTION_FEE;
 
-                transactionProcess = 0.35m * numOfChecks;
+                totalDeposit += netTotal;
+                deposit_count++;
+
+
+
+                if (numOfChecks >= 5)
+                {
+
+                    checkProcessFee = 0.35m * numOfChecks;
+                }
+                else
+                {
+                    checkProcessFee = CHECK_PROCESS_FEE * numOfChecks;
+                }
+
+
+                if (deposit_count > 2)
+                {
+                    TRANACTION_FEE = 0.00m;
+                }
+                else
+                {
+                    TRANACTION_FEE = 2.50m;
+                }
+
+
+
+                lblDepositSummary.Text = $"Deposit for {accountName} \r\nAccount #: {accountNum} \r\n \r\n" +
+                    $"Cash Deposit (after Surcharge): {cashDptAfterSurg:c} " +
+                    $"\r\nCheck Deposit: {checkingAmt:c} \r\n" +
+                    $"Check Processing Fee:{checkProcessFee:c}\r\nTransaction Fee: {TRANACTION_FEE:c} \r\n \r\nNet Deposit: {netTotal:c} ";
+
+
+
+                lblTotalDisplay.Text = $"Total Deposits for all accounts belonging {accountName} is {totalDeposit:c}";
+
+
+                txtAccountHolder.Enabled = false;
+                btnMakeDeposit.Enabled = false;
+                btnNewAccount.Enabled = true;
+
             }
-            else
+            catch(Exception ex)
             {
-                transactionProcess = CHECK_PROCESS_FEE * numOfChecks;
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), default, MessageBoxIcon.Error );
             }
-
-
-
-            lblDepositSummary.Text =$"Deposit for {accountName} \r\nAccount #: {accountNum} \r\n \r\n" +
-                $"Cash Deposit (after Surcharge):{cashDptAfterSurg:c} " +
-                $"\r\nCheck Deposit:{checkingAmt:c} \r\n" +
-                $"Check Processing Fee:{transactionProcess:c} \r\n \r\nNet Deposit{netTotal:c} ";
-
-            
-
-            lblTotalDisplay.Text = $"Total Deposit for all accounts belonging {accountName} is {totalDeposit:c}";
-
-
-            txtAccountHolder.Enabled = false;
-            btnMakeDeposit.Enabled = false;
-            btnNewAccount.Enabled = true;
-            
-
 
         }
 
@@ -71,6 +96,20 @@ namespace BankDeposits
             lblDepositSummary.Text = "";
             btnMakeDeposit.Enabled = true;
             txtAccountNumber.Focus();
+
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+
+        {
+            string message = $"Thank you for completing {deposit_count} deposits with us\r\n" +
+                $"Net Deposits were: {totalDeposit:c}.";
+
+            string title = "Come back again soon!";
+
+            MessageBox.Show(message, title);
+
+            this.Close();
 
         }
     }
