@@ -36,9 +36,9 @@ namespace BankDeposits
                 decimal TRANACTION_FEE = 2.50m;
                 decimal cashDptAfterSurg = cashAmount * SURG_PERC;
                 decimal checkProcessFee = CHECK_PROCESS_FEE * numOfChecks;
-                decimal netTotal = cashDptAfterSurg + checkingAmt - checkProcessFee - TRANACTION_FEE;
+               
 
-                totalDeposit += netTotal;
+                
                 deposit_count++;
 
 
@@ -53,7 +53,7 @@ namespace BankDeposits
                     checkProcessFee = CHECK_PROCESS_FEE * numOfChecks;
                 }
 
-
+             
 
 
                 if (deposit_count > 2)
@@ -64,8 +64,10 @@ namespace BankDeposits
                 {
                     TRANACTION_FEE = 2.50m;
                 }
+               
 
-
+                decimal netTotal = cashDptAfterSurg + checkingAmt - checkProcessFee - TRANACTION_FEE;
+                   totalDeposit += netTotal;
 
                 lblDepositSummary.Text = $"Deposit for {accountName} \r\nAccount #: {accountNum} \r\n \r\n" +
                     $"Cash Deposit (after Surcharge): {cashDptAfterSurg:c} " +
