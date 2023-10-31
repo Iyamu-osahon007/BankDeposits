@@ -29,7 +29,7 @@ namespace BankDeposits
             try
             {
                 string accountName = txtAccountHolder.Text;
-                int accountNum = Convert.ToInt32(txtAccountNumber.Text);
+                string accountNum = Convert.ToString(txtAccountNumber.Text);
                 decimal cashAmount = Convert.ToDecimal(txtCashAmt.Text);
                 decimal checkingAmt = Convert.ToDecimal(txtCheckAmt.Text);
                 int numOfChecks = Convert.ToInt32(txtNumChecks.Text);
@@ -52,6 +52,8 @@ namespace BankDeposits
                 {
                     checkProcessFee = CHECK_PROCESS_FEE * numOfChecks;
                 }
+
+
 
 
                 if (deposit_count > 2)
